@@ -12,7 +12,7 @@ import IconPinia from './shared/components/Icons/IconPinia.vue';
       <h3>Vue 3 + TS + Pinia + TanStackQuery 4</h3>
       <nav>
         <RouterLink to="/">Inicio</RouterLink> 
-        <RouterLink to="/clientes">Mis Clientes</RouterLink> 
+        <RouterLink to="/clients">Mis Clientes</RouterLink> 
       </nav>
     </div>
   </header>
