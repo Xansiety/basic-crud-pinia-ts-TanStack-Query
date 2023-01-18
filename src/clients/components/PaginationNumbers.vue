@@ -19,7 +19,7 @@ const totalPageNumbers = ref<number[]>([]);
 
 watch(totalPages, () => {
     totalPageNumbers.value = [...new Array(totalPages.value)].map((value, index) => index + 1);
-    console.log('Hecho')
+    // console.log('Hecho')
 }, { immediate: true });
 
 </script> 
