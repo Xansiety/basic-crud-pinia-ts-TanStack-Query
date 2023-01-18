@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import ClientsLayout from "@/clients/layout/clientsLayout.vue";
 import ListPage from "@/clients/pages/ListPage.vue";
 import ClientPage from "@/clients/pages/ClientPage.vue";
+import ClientsLayout from "@/clients/layout/ClientsLayout.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
