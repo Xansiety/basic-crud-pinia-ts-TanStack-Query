@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import type { Client } from "../clients/interfaces/client";
-export const useClientsSetupStore = defineStore("clients", () => {
+export const useClientsStore = defineStore("clients", () => {
   const currentPage = ref<number>(1);
   const totalPages = ref<number>(5);
   const clients = ref<Client[]>();
