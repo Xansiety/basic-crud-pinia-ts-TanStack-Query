@@ -1,7 +1,7 @@
 import type { Client } from "@/clients/interfaces/client";
 import { useQuery } from "@tanstack/vue-query";
 import { storeToRefs } from "pinia";
-import { watch, computed } from "vue";
+import { watch } from "vue";
 import clientsApi from "../../api/clients-api";
 import { useClientsStore } from "../../store/clients.store";
 
@@ -45,9 +45,9 @@ const useClients = () => {
 
     //Getters
     //[1,2,3,4,5]
-    totalPageNumbers: computed(() =>
-      [...new Array(totalPages.value)].map((value, index) => index + 1)
-    ),
+    // totalPageNumbers: computed(() =>
+    //   [...new Array(totalPages.value)].map((value, index) => index + 1)
+    // ),
   };
 };
 
