@@ -1,7 +1,7 @@
 import type { Client } from "@/clients/interfaces/client";
 import { useQuery } from "@tanstack/vue-query";
 import { storeToRefs } from "pinia";
-import { watch } from "vue";
+import { watch, computed } from "vue";
 import clientsApi from "../../api/clients-api";
 import { useClientsStore } from "../../store/clients.store";
 
@@ -14,9 +14,8 @@ const useClients = () => {
   const clientsStore = useClientsStore();
   const { currentPage, clients, totalPages } = storeToRefs(clientsStore);
 
-  const { isLoading, data } = useQuery(
-    ["clients?page=", 1], 
-    () => getClients()
+  const { isLoading, data } = useQuery(["clients?page=", 1], () =>
+    getClients()
   );
 
   // estar pendientes de la data, y añadirla al store siempre y cuando haya información
@@ -28,6 +27,19 @@ const useClients = () => {
     // properties
     isLoading,
     clients,
+    currentPage,
+    totalPages,
+
+    // Methods:
+    getPage(page: number) {
+      clientsStore.setPage(page);
+    },
+
+    //Getters
+    //[1,2,3,4,5]
+    totalPageNumbers: computed(() =>
+      [...new Array(totalPages.value)].map((value, index) => index + 1)
+    ),
   };
 };
 
