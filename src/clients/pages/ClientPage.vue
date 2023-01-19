@@ -3,16 +3,15 @@ import clientsApi from '@/api/clients-api';
 import LoadingModal from '@/shared/components/LoadingModal.vue';
 import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { watch } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import useClient from '../composables/useClient';
 import type { Client } from '../interfaces/client';
 
 const route = useRoute();
-const { isLoading, client } = useClient(+route.params.id);
-
-
-
-const queryClient = useQueryClient(); // trae el objeto que definimos en el main
+const router = useRouter();
+const { isLoading, client, isError } = useClient(+route.params.id);
+ 
+// const queryClient = useQueryClient(); // trae el objeto que definimos en el main
 
 const updateClient = async (client: Client): Promise<Client> => {
     // await new Promise((resolve) => {
@@ -27,7 +26,7 @@ const updateClient = async (client: Client): Promise<Client> => {
     // queries.forEach( query => query.reset()); // invalidar el cache de todas las coincidencias
     // queries.forEach( query => query.fetch());
     // console.log(queries)
-    
+
     return data;
 }
 
@@ -42,7 +41,13 @@ const clientMutation = useMutation(updateClient, {
 watch(clientMutation.isSuccess, () => {
     setTimeout(() => {
         clientMutation.reset()
-    }, 2000);
+         router.replace('/clients') 
+    }, 1000);
+})
+
+watch(isError, () => { 
+    if(isError.value)
+    router.replace('/clients') 
 })
 
 </script> 

@@ -22,10 +22,11 @@ const useClients = () => {
 
   const { isLoading, data } = useQuery(
     ["clients?page=", currentPage],
-    () => getClients(currentPage.value)
-    // {
-    //   staleTime: 1000 * 60, // Yo no estoy esperando que la información este actualizada hasta que pase un minuto
-    // }
+    () => getClients(currentPage.value),
+    {
+      // retry: false, // indicar que no e vuelva a hacer la petición en caso de error
+      //staleTime: 1000 * 60, // Yo no estoy esperando que la información este actualizada hasta que pase un minuto
+    }
   );
 
   // estar pendientes de la data, y añadirla al store siempre y cuando haya información

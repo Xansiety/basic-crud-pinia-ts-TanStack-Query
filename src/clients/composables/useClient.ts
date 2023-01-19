@@ -11,25 +11,34 @@ const getClient = async (id: number): Promise<Client> => {
 export const useClient = (id: number) => {
   const client = ref<Client>();
 
-  const { isLoading, data } = useQuery(
+  const { isLoading, data, isError} = useQuery(
     ["cliente", id],
     () => getClient(id),
     {
-        cacheTime: 0, // Para que siempre se haga la petición sin mostrar el cache
-        // onSuccess(data){
-        //   client.value = data
-        // }
+      // cacheTime: 0, // Para que siempre se haga la petición sin mostrar el cache,
+      retry: false, // indicar que no e vuelva a hacer la petición en caso de error
+      // onSuccess(data){
+      //   client.value = data
+      // }
+      // onError(error: any)
+      // {
+      //   console.log({error})
+      // }
     }
   );
 
-  watch(data, () => {
-    if (data.value)
-         client.value = {...data.value}; // desestructurar para romper la referencia de solo lectura
-  }, { immediate: true });
+  watch(
+    data,
+    () => {
+      if (data.value) client.value = { ...data.value }; // desestructurar para romper la referencia de solo lectura
+    },
+    { immediate: true }
+  );
 
   return {
+    isError,
     isLoading,
-    client,
+    client, 
   };
 };
 
