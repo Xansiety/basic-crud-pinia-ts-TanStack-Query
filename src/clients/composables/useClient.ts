@@ -7,6 +7,7 @@ const getClient = async (id: number): Promise<Client> => {
   const { data } = await clientsApi.get(`/clients/${id}`);
   return data;
 };
+
 export const useClient = (id: number) => {
   const client = ref<Client>();
 
@@ -15,12 +16,15 @@ export const useClient = (id: number) => {
     () => getClient(id),
     {
         cacheTime: 0, // Para que siempre se haga la petición sin mostrar el cache
+        // onSuccess(data){
+        //   client.value = data
+        // }
     }
   );
 
   watch(data, () => {
     if (data.value)
-         client.value = data.value;
+         client.value = {...data.value}; // desestructurar para romper la referencia de solo lectura
   }, { immediate: true });
 
   return {
