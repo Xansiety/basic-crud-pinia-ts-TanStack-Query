@@ -1,72 +1,42 @@
 <script setup lang='ts'>
-import clientsApi from '@/api/clients-api';
 import LoadingModal from '@/shared/components/LoadingModal.vue';
-import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import useClient from '../composables/useClient';
-import type { Client } from '../interfaces/client';
 
 const route = useRoute();
 const router = useRouter();
-const { isLoading, client, isError } = useClient(+route.params.id);
- 
-// const queryClient = useQueryClient(); // trae el objeto que definimos en el main
-
-const updateClient = async (client: Client): Promise<Client> => {
-    // await new Promise((resolve) => {
-    //     setTimeout(() => resolve(true), 2500)
-    // }); 
-    const { id, ...rest } = client;
-    const { data } = await clientsApi.patch<Client>(`/clients/${id}`, rest);
-
-    //eliminar todos los query cache en particular
-    // const queries = queryClient.getQueryCache().clear(); // eliminamos todos los segmentos del cache
-    // const queries = queryClient.getQueryCache().findAll(['clients?page='], {exact: false}); // eliminar todas las coincidencias
-    // queries.forEach( query => query.reset()); // invalidar el cache de todas las coincidencias
-    // queries.forEach( query => query.fetch());
-    // console.log(queries)
-
-    return data;
-}
-
-const clientMutation = useMutation(updateClient, {
-    // onSuccess(data){
-    //     console.log({data})
-    // }
-});
-
+const { isLoading, client, isError, clientMutation, updateClient, isUpdating, isUpdatingSuccessfully } = useClient(+route.params.id);
 
 // quitar alerta de isSuccess
-watch(clientMutation.isSuccess, () => {
+watch(isUpdatingSuccessfully, () => {
     setTimeout(() => {
         clientMutation.reset()
-         router.replace('/clients') 
+        router.replace('/clients')
     }, 1000);
 })
 
-watch(isError, () => { 
-    if(isError.value)
-    router.replace('/clients') 
+watch(isError, () => {
+    if (isError.value)
+        router.replace('/clients')
 })
-
 </script> 
 
 <template>
     <div>
-        <h3 v-if="clientMutation.isLoading.value"> Guardando...</h3>
-        <h3 v-if="clientMutation.isSuccess.value">Guardado</h3>
+        <h3 v-if="isUpdating"> Guardando...</h3>
+        <h3 v-if="isUpdatingSuccessfully">Guardado</h3>
 
         <LoadingModal v-if="isLoading" />
 
         <div v-if="client">
             <h1>{{ client.name }}</h1>
-            <form @submit.prevent="clientMutation.mutate(client!)">
+            <form @submit.prevent="updateClient(client!)">
                 <input type="text" placeholder="Nombre cliente" v-model="client.name">
                 <br>
                 <input type="text" placeholder="Dirección cliente" v-model="client.address">
                 <br>
-                <button :disabled="clientMutation.isLoading.value" type="submit">Guardar</button>
+                <button :disabled="isUpdating" type="submit">Guardar</button>
             </form>
         </div>
 
