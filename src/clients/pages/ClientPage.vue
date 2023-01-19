@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import clientsApi from '@/api/clients-api';
 import LoadingModal from '@/shared/components/LoadingModal.vue';
-import { useMutation } from '@tanstack/vue-query';
+import { useMutation, useQueryClient } from '@tanstack/vue-query';
 import { watch } from 'vue';
 import { useRoute } from 'vue-router';
 import useClient from '../composables/useClient';
@@ -11,19 +11,31 @@ const route = useRoute();
 const { isLoading, client } = useClient(+route.params.id);
 
 
+
+const queryClient = useQueryClient(); // trae el objeto que definimos en el main
+
 const updateClient = async (client: Client): Promise<Client> => {
-
-
-    await new Promise((resolve) => {
-        setTimeout(() => resolve(true), 2500)
-    });
-
+    // await new Promise((resolve) => {
+    //     setTimeout(() => resolve(true), 2500)
+    // }); 
     const { id, ...rest } = client;
     const { data } = await clientsApi.patch<Client>(`/clients/${id}`, rest);
+
+    //eliminar todos los query cache en particular
+    // const queries = queryClient.getQueryCache().clear(); // eliminamos todos los segmentos del cache
+    // const queries = queryClient.getQueryCache().findAll(['clients?page='], {exact: false}); // eliminar todas las coincidencias
+    // queries.forEach( query => query.reset()); // invalidar el cache de todas las coincidencias
+    // queries.forEach( query => query.fetch());
+    // console.log(queries)
+    
     return data;
 }
 
-const clientMutation = useMutation(updateClient);
+const clientMutation = useMutation(updateClient, {
+    // onSuccess(data){
+    //     console.log({data})
+    // }
+});
 
 
 // quitar alerta de isSuccess
